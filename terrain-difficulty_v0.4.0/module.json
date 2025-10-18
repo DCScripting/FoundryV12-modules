@@ -1,9 +1,6 @@
 {
   "id": "terrain-difficulty",
   "title": "Terrain Difficulty",
-  "description": "Integrates with MidiQOL and D&D5e to automatically calculate terrain difficulty, apply movement penalties, and display UI overlays.",
-  "version": "0.4.0",
-  "author": "Damien Cresswell",
   "authors": [
     {
       "name": "Damien Cresswell",
