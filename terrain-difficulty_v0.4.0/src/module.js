@@ -13,6 +13,7 @@ Last edit: 2025-10-18
 
 Hooks.once('init', () => {
   console.log("Terrain Difficulty | Initialising module v0.4.0");
+
   game.settings.register("terrain-difficulty", "enableOverlay", {
     name: "Enable Terrain Overlays",
     hint: "Show tinted terrain overlay when crossing difficult terrain.",
@@ -21,6 +22,7 @@ Hooks.once('init', () => {
     type: Boolean,
     default: true
   });
+
   game.settings.register("terrain-difficulty", "enableLabels", {
     name: "Enable Floating Labels",
     hint: "Display text labels showing terrain penalties.",
@@ -63,20 +65,23 @@ Hooks.on("dragRuler.MeasurementUpdated", (ruler, measurement) => {
   ruler.total += totalPenalty;
 });
 
+// Apply difficult terrain penalties to tokens when they move
 Hooks.on("updateToken", async (token, diff) => {
-  if (!diff.x && !diff.y) return;
-  const penalty = 10; // Example static penalty
+  if (!diff.x && !diff.y) return;  // Only act on actual movement
+
   const actor = token.actor;
-  if (actor?.system?.attributes?.movement) {
-    await actor.createEmbeddedDocuments("ActiveEffect", [{
-      label: "Difficult Terrain Penalty",
-      icon: "icons/svg/trap.svg",
-      changes: [{key: "system.attributes.movement.walk", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -penalty}],
-      duration: {rounds: 1},
-      origin: "terrain-difficulty"
-    }]);
-    if (game.modules.get("midi-qol")?.active) {
-      console.log(`MidiQOL integration applied for ${actor.name}`);
-    }
+  if (!actor || !actor.system?.attributes?.movement) return; // Skip tokens without actors or movement
+
+  const penalty = 10; // Example static penalty
+  await actor.createEmbeddedDocuments("ActiveEffect", [{
+    label: "Difficult Terrain Penalty",
+    icon: "icons/svg/trap.svg",
+    changes: [{ key: "system.attributes.movement.walk", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -penalty }],
+    duration: { rounds: 1 },
+    origin: "terrain-difficulty"
+  }]);
+
+  if (game.modules.get("midi-qol")?.active) {
+    console.log(`MidiQOL integration applied for ${actor.name}`);
   }
 });
