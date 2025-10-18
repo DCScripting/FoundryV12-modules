@@ -21,8 +21,7 @@
   ],
   "compatibility": {
     "minimum": "12",
-    "verified": "12",
-    "maximum": null
+    "verified": "12"
   },
   "dependencies": [
     {
