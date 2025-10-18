@@ -14,7 +14,7 @@ This helps DMs and players see exactly how terrain affects movement — visually
 ### Manual Installation
 
 1. Download the latest release:
-   [terrain-difficulty_v0.4.0.zip][https://example.com/terrain-difficulty_v0.4.0.zip](https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip)
+   [terrain-difficulty_v0.4.0.zip](https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip)
 
 2. Extract the archive to your Foundry modules folder:
 <Foundry Data Folder>/Data/modules/terrain-difficulty/
@@ -31,7 +31,6 @@ terrain-difficulty/
 
 4. In Foundry, go to:
 Configuration > Manage Modules > Enable "Terrain Difficulty"
-
 
 ---
 
@@ -135,4 +134,5 @@ Support for Pathfinder 2e and other systems
 
 
 If you encounter a bug or want to request features, please open an issue or submit feedback through your development environment or GitHub repository (when available).
+
 
