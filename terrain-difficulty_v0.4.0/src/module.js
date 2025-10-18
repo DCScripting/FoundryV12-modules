@@ -4,7 +4,7 @@
  *
  * .DESCRIPTION
  * Calculates terrain difficulty from scene tiles, applies movement penalties,
- * and dynamically applies/removes Midi-QOL effects when tokens move.
+ * dynamically applies/removes Midi-QOL effects, and displays floating labels.
  *
  * .NOTES
  * Author: Damien.Cresswell.
@@ -16,8 +16,8 @@ Hooks.once("init", async function() {
 
   // Module settings
   game.settings.register("terrain-difficulty", "showOverlay", {
-    name: "Show Terrain Overlay",
-    hint: "Display a visual overlay of terrain difficulty on the canvas.",
+    name: "Enable Terrain Overlays",
+    hint: "Displays tinted overlays on tiles considered difficult terrain.",
     scope: "world",
     config: true,
     default: true,
@@ -26,17 +26,23 @@ Hooks.once("init", async function() {
 
   game.settings.register("terrain-difficulty", "applyMidiEffects", {
     name: "Apply Midi-QOL Effects",
-    hint: "Apply effects like slowed movement automatically via Midi-QOL when moving through difficult terrain.",
+    hint: "Applies ActiveEffects for speed reduction automatically.",
     scope: "world",
+    config: true,
+    default: true,
+    type: Boolean
+  });
+
+  game.settings.register("terrain-difficulty", "showFloatingLabels", {
+    name: "Enable Floating Labels",
+    hint: "Displays floating text labels above tokens showing movement penalties.",
+    scope: "client",
     config: true,
     default: true,
     type: Boolean
   });
 });
 
-/**
- * Track the last terrain tile a token was on
- */
 const tokenLastTerrain = new Map();
 
 Hooks.on("updateToken", async (token, diff) => {
@@ -57,12 +63,11 @@ Hooks.on("updateToken", async (token, diff) => {
 
     tokenLastTerrain.set(token.id, terrainData || null);
 
-    if (!terrainData) return; // No terrain here
+    if (!terrainData) return;
 
     const baseSpeed = actor.system.attributes.movement.walk || 30;
     const modifiedSpeed = Math.max(baseSpeed - terrainData.penalty, 0);
-
-    await actor.update({"system.attributes.movement.walk": modifiedSpeed});
+    await actor.update({ "system.attributes.movement.walk": modifiedSpeed });
 
     if (game.settings.get("terrain-difficulty", "applyMidiEffects") && game.modules.get("midi-qol")?.active) {
       applyTerrainEffect(actor, terrainData);
@@ -72,13 +77,17 @@ Hooks.on("updateToken", async (token, diff) => {
       drawTerrainOverlay(token, terrainData);
     }
 
+    if (game.settings.get("terrain-difficulty", "showFloatingLabels")) {
+      drawFloatingLabel(token, terrainData);
+    }
+
   } catch (err) {
     console.error(`Terrain Difficulty | Error processing token ${token.name}:`, err);
   }
 });
 
 /**
- * Get terrain data at token position based on tiles with terrain flags
+ * Get terrain data at token position (highest-penalty tile only)
  */
 function getTerrainDifficultyAt(x, y) {
   if (!canvas.scene) return null;
@@ -97,6 +106,7 @@ function getTerrainDifficultyAt(x, y) {
 
   let penalty = 0;
   let effect = "Slowed";
+
   for (const tile of tilesHere) {
     const tilePenalty = tile.getFlag("terrain-difficulty", "terrainDifficulty") || 0;
     const tileEffect = tile.getFlag("terrain-difficulty", "terrainEffect") || "Slowed";
@@ -154,4 +164,44 @@ function drawTerrainOverlay(token, terrainData) {
   canvas.foreground.addChild(overlay);
 
   setTimeout(() => overlay.destroy(), 2000);
+}
+
+/**
+ * Draw floating text label above token showing movement penalty
+ */
+function drawFloatingLabel(token, terrainData) {
+  const label = new PIXI.Text(`-${terrainData.penalty} ft`, {
+    fontFamily: "Arial",
+    fontSize: 20,
+    fill: 0xff0000,
+    stroke: 0x000000,
+    strokeThickness: 3
+  });
+
+  label.anchor.set(0.5, 1);
+  label.x = token.x + canvas.grid.size / 2;
+  label.y = token.y;
+
+  canvas.foreground.addChild(label);
+
+  // Animate floating upwards and fade out
+  const duration = 1500; // milliseconds
+  const startTime = Date.now();
+
+  const ticker = PIXI.Ticker.shared;
+  const update = () => {
+    const elapsed = Date.now() - startTime;
+    const progress = elapsed / duration;
+
+    if (progress >= 1) {
+      label.destroy();
+      ticker.remove(update);
+      return;
+    }
+
+    label.y = token.y - 20 * progress;
+    label.alpha = 1 - progress;
+  };
+
+  ticker.add(update);
 }
