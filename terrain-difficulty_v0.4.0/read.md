@@ -15,9 +15,9 @@ This helps DMs and players see exactly how terrain affects movement — visually
 
 1. Download the latest release:
    [terrain-difficulty_v0.4.0.zip](https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip)
-   or use the manifest url in the install module section of foundry vtt: https://raw.githubusercontent.com/DCScripting/FoundryV12-modules/main/terrain-difficulty/module.json
+   or use the manifest url in the install module section of foundry vtt: https://github.com/DCScripting/FoundryV12-modules/blob/main/terrain-difficulty_v0.4.0/module.json
 
-3. Extract the archive to your Foundry modules folder:
+2. Extract the archive to your Foundry modules folder:
 <Foundry Data Folder>/Data/modules/terrain-difficulty/
 
 The folder structure should look like this:
