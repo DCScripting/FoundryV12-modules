@@ -3,15 +3,31 @@
   "title": "Terrain Difficulty",
   "description": "Integrates with MidiQOL and D&D5e to automatically calculate terrain difficulty, apply movement penalties, and display UI overlays.",
   "version": "0.4.0",
-  "authors": [{"name": "Damien Cresswell."}],
+  "authors": [
+    {
+      "name": "Damien Cresswell.",
+      "url": "https://github.com/DCScripting",
+      "email": ""
+    }
+  ],
   "minimumCoreVersion": "12",
   "compatibleCoreVersion": "12",
+  "system": ["dnd5e"],
   "esmodules": ["src/module.js"],
   "styles": [],
   "packs": [],
   "dependencies": [
-    {"name": "midi-qol", "type": "module", "manifest": "modules/midi-qol/module.json", "version": "latest"}
+    {
+      "name": "midi-qol",
+      "type": "module",
+      "manifest": "modules/midi-qol/module.json",
+      "version": "latest"
+    }
   ],
-  "manifest": "https://example.com/terrain-difficulty/module.json",
-  "download": "https://example.com/terrain-difficulty.zip"
+  "manifest": "https://raw.githubusercontent.com/DCScripting/FoundryV12-modules/main/terrain-difficulty/module.json",
+  "download": "https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip",
+  "readme": "https://github.com/DCScripting/FoundryV12-modules/blob/main/terrain-difficulty/README.md",
+  "bugs": "https://github.com/DCScripting/FoundryV12-modules/issues",
+  "changelog": "https://github.com/DCScripting/FoundryV12-modules/releases",
+  "license": "MIT"
 }
