@@ -3,12 +3,11 @@
  * Terrain Difficulty module for Foundry VTT 12
  *
  * .DESCRIPTION
- * Automatically calculates terrain difficulty for D&D5e systems using MidiQOL.
- * Applies movement penalties to actors and optionally applies Midi-QOL effects.
- * Also displays visual overlays of terrain difficulty.
+ * Calculates terrain difficulty from scene tiles, applies movement penalties,
+ * and dynamically applies/removes Midi-QOL effects when tokens move.
  *
  * .NOTES
- * Author: Damien.Cresswell - Sistena Ltd.
+ * Author: Damien.Cresswell.
  * Last edit: 18/10/2025
  */
 
@@ -35,30 +34,40 @@ Hooks.once("init", async function() {
   });
 });
 
+/**
+ * Track the last terrain tile a token was on
+ */
+const tokenLastTerrain = new Map();
+
 Hooks.on("updateToken", async (token, diff) => {
-  // Only process if token actually moved
   if (!diff.x && !diff.y) return;
 
   const actor = token.actor;
-  if (!actor) return; // Skip tokens without actors
+  if (!actor) return;
   if (!actor.system?.attributes?.movement) return;
 
   try {
     const terrainData = getTerrainDifficultyAt(token.x, token.y);
-    if (!terrainData) return;
+    const lastData = tokenLastTerrain.get(token.id) || null;
+
+    // Remove previous effect if leaving a tile
+    if (lastData && (!terrainData || lastData.effect !== terrainData.effect)) {
+      removeTerrainEffect(actor, lastData.effect);
+    }
+
+    tokenLastTerrain.set(token.id, terrainData || null);
+
+    if (!terrainData) return; // No terrain here
 
     const baseSpeed = actor.system.attributes.movement.walk || 30;
     const modifiedSpeed = Math.max(baseSpeed - terrainData.penalty, 0);
 
-    // Update actor speed temporarily
     await actor.update({"system.attributes.movement.walk": modifiedSpeed});
 
-    // Apply Midi-QOL effects if enabled
     if (game.settings.get("terrain-difficulty", "applyMidiEffects") && game.modules.get("midi-qol")?.active) {
-      applyMidiQOLEffects(actor, terrainData);
+      applyTerrainEffect(actor, terrainData);
     }
 
-    // Draw overlay if enabled
     if (game.settings.get("terrain-difficulty", "showOverlay")) {
       drawTerrainOverlay(token, terrainData);
     }
@@ -69,29 +78,47 @@ Hooks.on("updateToken", async (token, diff) => {
 });
 
 /**
- * Returns terrain difficulty data at a given canvas position.
- * Replace this with your tile/wall/scene logic.
+ * Get terrain data at token position based on tiles with terrain flags
  */
 function getTerrainDifficultyAt(x, y) {
-  // Example: simple random penalty for demonstration
-  return {
-    penalty: Math.floor(Math.random() * 10), // Movement penalty
-    effect: "Slowed" // Optional Midi-QOL effect label
-  };
+  if (!canvas.scene) return null;
+
+  const gridSize = canvas.grid.size;
+  const tileX = Math.floor(x / gridSize) * gridSize;
+  const tileY = Math.floor(y / gridSize) * gridSize;
+
+  const tilesHere = canvas.tiles.placeables.filter(tile => {
+    const withinX = tile.x <= tileX && (tile.x + tile.width) > tileX;
+    const withinY = tile.y <= tileY && (tile.y + tile.height) > tileY;
+    return withinX && withinY;
+  });
+
+  if (!tilesHere.length) return null;
+
+  let penalty = 0;
+  let effect = "Slowed";
+  for (const tile of tilesHere) {
+    const tilePenalty = tile.getFlag("terrain-difficulty", "terrainDifficulty") || 0;
+    const tileEffect = tile.getFlag("terrain-difficulty", "terrainEffect") || "Slowed";
+    if (tilePenalty > penalty) {
+      penalty = tilePenalty;
+      effect = tileEffect;
+    }
+  }
+
+  return { penalty, effect };
 }
 
 /**
- * Apply Midi-QOL effects such as movement reduction or disadvantage.
+ * Apply terrain Midi-QOL effect to actor
  */
-function applyMidiQOLEffects(actor, terrainData) {
-  // Check if the actor already has the effect
-  const existingEffect = actor.effects.find(e => e.data.label === terrainData.effect);
-  if (existingEffect) return;
+async function applyTerrainEffect(actor, terrainData) {
+  const existing = actor.effects.find(e => e.data.label === terrainData.effect);
+  if (existing) return;
 
-  // Create temporary effect
   const effectData = {
     label: terrainData.effect,
-    icon: "icons/svg/trap.svg", // Example icon
+    icon: "icons/svg/trap.svg",
     origin: "Terrain Difficulty",
     disabled: false,
     duration: { rounds: 1 },
@@ -105,11 +132,19 @@ function applyMidiQOLEffects(actor, terrainData) {
     ]
   };
 
-  actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+  await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
 }
 
 /**
- * Draw a simple overlay on the canvas for terrain difficulty.
+ * Remove a terrain Midi-QOL effect from actor
+ */
+async function removeTerrainEffect(actor, effectLabel) {
+  const effect = actor.effects.find(e => e.data.label === effectLabel);
+  if (effect) await effect.delete();
+}
+
+/**
+ * Draw a temporary overlay for terrain
  */
 function drawTerrainOverlay(token, terrainData) {
   const overlay = new PIXI.Graphics();
@@ -118,6 +153,5 @@ function drawTerrainOverlay(token, terrainData) {
   overlay.endFill();
   canvas.foreground.addChild(overlay);
 
-  // Remove overlay after short delay to prevent clutter
   setTimeout(() => overlay.destroy(), 2000);
 }
