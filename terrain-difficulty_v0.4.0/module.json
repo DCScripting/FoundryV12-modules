@@ -5,13 +5,16 @@
   "version": "0.4.0",
   "authors": [
     {
-      "name": "Damien Cresswell.",
+      "name": "Damien Cresswell - Sistena Ltd.",
       "url": "https://github.com/DCScripting",
       "email": ""
     }
   ],
-  "minimumCoreVersion": "12",
-  "compatibleCoreVersion": "12",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12",
+    "maximum": null
+  },
   "system": ["dnd5e"],
   "esmodules": ["src/module.js"],
   "styles": [],
@@ -24,9 +27,9 @@
       "version": "latest"
     }
   ],
-  "manifest": "https://raw.githubusercontent.com/DCScripting/FoundryV12-modules/main/terrain-difficulty/module.json",
+  "manifest": "https://raw.githubusercontent.com/DCScripting/FoundryV12-modules/main/terrain-difficulty_v0.4.0/module.json",
   "download": "https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip",
-  "readme": "https://github.com/DCScripting/FoundryV12-modules/blob/main/terrain-difficulty/README.md",
+  "readme": "https://github.com/DCScripting/FoundryV12-modules/blob/main/terrain-difficulty_v0.4.0/README.md",
   "bugs": "https://github.com/DCScripting/FoundryV12-modules/issues",
   "changelog": "https://github.com/DCScripting/FoundryV12-modules/releases",
   "license": "MIT"
