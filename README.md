@@ -1,5 +1,5 @@
 # FoundryV12-modules  
-A collection of custom Foundry VTT v12 modules created by Damien Cresswell (Sistena Ltd)
+A collection of custom Foundry VTT v12 modules created by Damien Cresswell
 
 ![GitHub license](https://img.shields.io/github/license/DCScripting/FoundryV12-modules)
 ![GitHub last commit](https://img.shields.io/github/last-commit/DCScripting/FoundryV12-modules)
@@ -16,12 +16,12 @@ A collection of custom Foundry VTT v12 modules created by Damien Cresswell (Sist
 Provides a set of modular Foundry VTT v12 enhancements and utilities for D&D 5e.  
 
 .DESCRIPTION  
-This repository contains multiple Foundry VTT modules built and maintained by Damien Cresswell of Sistena Ltd.  
+This repository contains multiple Foundry VTT modules built and maintained by Damien Cresswell.  
 Each module is self-contained, designed for Foundry VTT v12, and enhances gameplay or GM control in D&D 5e.  
 Modules are developed for both experimentation and campaign use, and can be used independently or combined.  
 
 .NOTES  
-Author: Damien.Cresswell – Sistena Ltd.  
+Author: Damien.Cresswell.  
 Last edit: 25 October 2025  
 #>
 
