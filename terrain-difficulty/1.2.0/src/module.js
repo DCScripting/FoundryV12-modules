@@ -27,7 +27,7 @@
  * - Combat-only mode or always track
  * - Auto-reset movement each turn
  * 
- * @author Damien Cresswell - Sistena Ltd.
+ * @author Damien Cresswell.
  * @version 1.2.0
  * @date 25/10/2025
  */
