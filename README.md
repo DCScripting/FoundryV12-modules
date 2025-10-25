@@ -32,8 +32,6 @@ Last edit: 25 October 2025
 | Module Name | Version | Description | Foundry Compatibility | Status |
 |--------------|----------|--------------|------------------------|---------|
 | **terrain-difficulty** | v0.4.0 | Automatically calculates and applies terrain difficulty modifiers to token movement. | Core v12 | ✅ Stable |
-| **magnetic-lasso** | v0.1.0 | Adds a magnetic lasso drawing tool for map editing and selection. | Core v12 | ⚙️ Experimental |
-| *(Add future modules below…)* |  |  |  |  |
 
 ---
 
