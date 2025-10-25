@@ -1,0 +1,32 @@
+{
+  "id": "terrain-difficulty",
+  "title": "Terrain Difficulty",
+  "description": "Comprehensive terrain and movement management for D&D 5e. Paint 8 different terrain types with unique colors. Automatic movement tracking with combat integration - real-time movement overlay displayed above tokens, enforces movement limits, and prevents tokens from exceeding their speed. Color-coded visual feedback (green/orange/red). Configurable settings for tracking, enforcement, and combat-only mode.",
+  "version": "1.1.0",
+  "authors": [
+    {
+      "name": "Damien Cresswell - Sistena Ltd."
+    }
+  ],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
+  },
+  "esmodules": [
+    "src/module.js"
+  ],
+  "styles": [
+    "styles/terrain-difficulty.css"
+  ],
+  "scripts": [],
+  "packs": [],
+  "languages": [],
+  "relationships": {
+    "optionalDependencies": ["midi-qol"]
+  },
+  "url": "https://github.com/DCScripting/FoundryV12-modules",
+  "manifest": "https://github.com/DCScripting/FoundryV12-modules/raw/main/terrain-difficulty_v0.4.0/module.json",
+  "download": "https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip",
+  "license": "MIT"
+}
