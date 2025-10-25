@@ -5,7 +5,7 @@
   "version": "1.1.0",
   "authors": [
     {
-      "name": "Damien Cresswell - Sistena Ltd."
+      "name": "Damien Cresswell."
     }
   ],
   "compatibility": {
@@ -30,3 +30,4 @@
   "download": "https://github.com/DCScripting/FoundryV12-modules/archive/refs/heads/main.zip",
   "license": "MIT"
 }
+
